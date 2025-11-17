@@ -61,7 +61,7 @@ dependencies {
     debugImplementation(libs.androidx.ui.test.manifest)
 
     // Compose BOM
-    implementation(platform("androidx.compose:compose-bom:2024.06.00"))
+//    implementation(platform("androidx.compose:compose-bom:2024.06.00"))
     implementation("androidx.compose.ui:ui")
     implementation("androidx.compose.material3:material3")
     implementation("androidx.compose.ui:ui-tooling-preview")
@@ -83,6 +83,7 @@ dependencies {
     // Hilt
     implementation("com.google.dagger:hilt-android:2.51")
     kapt("com.google.dagger:hilt-android-compiler:2.51")
+    implementation ("androidx.hilt:hilt-navigation-compose:1.2.0")
 
     // Android Core
     implementation("androidx.core:core-ktx:1.13.1")
