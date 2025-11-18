@@ -64,29 +64,27 @@ woowacourse - Open Mission
 | **상세 화면**    | 단일 기록 상세 정보 확인 및 수정/삭제                                       |
 
 ---
-<div align="center">
+<table align="center">
+  <tr>
+    <td align="center">
+      <img src="./images/home.png" width="120"/><br/>
+      <sub>[ 홈 화면 ]</sub>
+    </td>
+    <td align="center">
+      <img src="./images/record.png" width="120"/><br/>
+      <sub>[ 로그 작성 ]</sub>
+    </td>
+    <td align="center">
+      <img src="./images/detail.png" width="120"/><br/>
+      <sub>[ 일일 상세 ]</sub>
+    </td>
+    <td align="center">
+      <img src="./images/list.png" width="120"/><br/>
+      <sub>[ 기록 목록 ]</sub>
+    </td>
+  </tr>
+</table>
 
-  <div style="display:inline-block; text-align:center; margin: 0 0px;">
-    <img src="./images/home.png" width="80"/>
-    <div> [ 홈 화면 ] </div>
-  </div>
-
-  <div style="display:inline-block; text-align:center; margin: 0 0px;">
-    <img src="./images/record.png" width="80"/>
-    <div> [ 로그 작성 ] </div>
-  </div>
-
-  <div style="display:inline-block; text-align:center; margin: 0 0px;">
-    <img src="./images/detail.png" width="80"/>
-    <div> [ 일일 상세 ] </div>
-  </div>
-
-  <div style="display:inline-block; text-align:center; margin: 0 0px;">
-    <img src="./images/list.png" width="80"/>
-    <div> [ 기록 목록 ] </div>
-  </div>
-
-</div>
 
 
 
