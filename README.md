@@ -64,6 +64,33 @@ woowacourse - Open Mission
 | **상세 화면**    | 단일 기록 상세 정보 확인 및 수정/삭제                                       |
 
 ---
+<div align="center">
+
+  <div style="display:inline-block; text-align:center; margin: 0 0px;">
+    <img src="./images/home.png" width="80"/>
+    <div> [ 홈 화면 ] </div>
+  </div>
+
+  <div style="display:inline-block; text-align:center; margin: 0 0px;">
+    <img src="./images/record.png" width="80"/>
+    <div> [ 로그 작성 ] </div>
+  </div>
+
+  <div style="display:inline-block; text-align:center; margin: 0 0px;">
+    <img src="./images/detail.png" width="80"/>
+    <div> [ 일일 상세 ] </div>
+  </div>
+
+  <div style="display:inline-block; text-align:center; margin: 0 0px;">
+    <img src="./images/list.png" width="80"/>
+    <div> [ 기록 목록 ] </div>
+  </div>
+
+</div>
+
+
+
+---
 
 ## 5. 기술 스택
 
