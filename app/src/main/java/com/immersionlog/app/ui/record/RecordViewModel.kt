@@ -3,6 +3,7 @@ package com.immersionlog.app.ui.record
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.immersionlog.app.domain.entity.FocusRecord
+import com.immersionlog.app.domain.usecase.GetRecordByIdUseCase
 import com.immersionlog.app.domain.usecase.SaveRecordUseCase
 import com.immersionlog.app.domain.usecase.UpdateRecordUseCase
 import com.immersionlog.app.utils.getTodayAsString
@@ -18,6 +19,11 @@ class RecordViewModel @Inject constructor(
     private val saveRecordUseCase: SaveRecordUseCase,
     private val updateRecordUseCase: UpdateRecordUseCase
 ) : ViewModel() {
+
+    @Inject
+    lateinit var getRecordByIdUseCase: GetRecordByIdUseCase
+
+    private var editingId: Long? = null
 
     private val _uiState = MutableStateFlow(RecordUiState())
     val uiState: StateFlow<RecordUiState> = _uiState
@@ -36,6 +42,13 @@ class RecordViewModel @Inject constructor(
 
     fun updateCategory(category: String) {
         _uiState.update { it.copy(category = category) }
+    }
+
+    fun loadRecord(id: Long) = viewModelScope.launch {
+        val record = getRecordByIdUseCase(id) ?: return@launch
+
+        editingId = record.id
+        setEditingMode(record)
     }
 
     fun setEditingMode(record: FocusRecord) {
