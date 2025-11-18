@@ -6,5 +6,7 @@ data class RecordUiState(
     val memo: String = "",
     val category: String = "",
     val isEditing: Boolean = false,
-    val isSaved: Boolean = false
+    val isSaved: Boolean = false,
+    val minutesError: String? = null,
+    val categoryError: String? = null
 )
