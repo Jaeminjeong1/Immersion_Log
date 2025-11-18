@@ -33,7 +33,16 @@ class RecordViewModel @Inject constructor(
     }
 
     fun updateMinutes(minutes: String) {
-        _uiState.update { it.copy(minutes = minutes) }
+        val error = if (minutes.isNotEmpty() && !minutes.all { it.isDigit() }) {
+            "숫자만 입력하세요"
+        } else null
+
+        _uiState.update {
+            it.copy(
+                minutes = minutes,
+                minutesError = error
+            )
+        }
     }
 
     fun updateMemo(memo: String) {
@@ -41,7 +50,17 @@ class RecordViewModel @Inject constructor(
     }
 
     fun updateCategory(category: String) {
-        _uiState.update { it.copy(category = category) }
+
+        val error = if (category.any { !it.isLetter() }) {
+            "한글 또는 영어만 입력하세요"
+        } else null
+
+        _uiState.update {
+            it.copy(
+                category = category,
+                categoryError = error
+            )
+        }
     }
 
     fun loadRecord(id: Long) = viewModelScope.launch {
@@ -65,6 +84,9 @@ class RecordViewModel @Inject constructor(
 
     fun saveRecord() = viewModelScope.launch {
         val state = _uiState.value
+        if (state.minutesError != null || state.categoryError != null)
+            return@launch
+
         val record = FocusRecord(
             date = getTodayAsString(),
             score = state.score,
@@ -79,6 +101,9 @@ class RecordViewModel @Inject constructor(
 
     fun updateRecord(id: Long) = viewModelScope.launch {
         val state = _uiState.value
+        if (state.minutesError != null || state.categoryError != null)
+            return@launch
+
         val record = FocusRecord(
             id = id,
             date = getTodayAsString(),
