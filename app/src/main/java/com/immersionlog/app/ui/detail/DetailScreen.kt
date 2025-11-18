@@ -41,7 +41,6 @@ fun DetailScreen(
 
             Spacer(modifier = Modifier.height(20.dp))
 
-            // 수정/삭제 버튼 배치
             Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
                 Button(
                     onClick = { onEdit(rec.id) }
@@ -57,7 +56,6 @@ fun DetailScreen(
             }
         }
     } ?: run {
-        // 로딩 중이거나 데이터가 없을 때는 간단한 안내를 표시
         Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
             Text("기록을 불러오는 중...")
         }

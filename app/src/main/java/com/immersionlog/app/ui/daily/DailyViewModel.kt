@@ -27,7 +27,6 @@ class DailyViewModel @Inject constructor(
 
     fun deleteRecord(record: FocusRecord) = viewModelScope.launch {
         deleteRecordUseCase(record)
-        // 삭제 후 다시 목록을 로드하거나, 플래그를 설정해 화면을 닫음
         _uiState.update { it.copy(isDeleted = true) }
     }
 }

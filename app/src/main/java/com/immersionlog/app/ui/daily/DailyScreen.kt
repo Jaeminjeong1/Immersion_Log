@@ -1,6 +1,5 @@
 package com.immersionlog.app.ui.daily
 
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -24,12 +23,10 @@ fun DailyScreen(
 ) {
     val uiState = viewModel.uiState.collectAsState()
 
-    // 날짜가 바뀌면 기록을 불러옵니다.
     LaunchedEffect(date) {
         viewModel.loadRecords(date)
     }
 
-    // 삭제 후 뒤로가기
     if (uiState.value.isDeleted) {
         onBack()
         return
@@ -49,7 +46,6 @@ fun DailyScreen(
     ) { innerPadding ->
         val records = uiState.value.records
         if (records.isEmpty()) {
-            // 기록이 없을 때 메시지
             Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                 Text("기록이 없습니다.")
             }
@@ -71,7 +67,6 @@ fun DailyScreen(
     }
 }
 
-/** 하나의 기록을 보여주는 카드, 수정/삭제 버튼 포함 */
 @Composable
 fun DailyRecordCard(
     record: FocusRecord,

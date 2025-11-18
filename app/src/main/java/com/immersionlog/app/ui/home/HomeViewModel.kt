@@ -77,7 +77,6 @@ class HomeViewModel @Inject constructor(
     }
 
     private fun updateWeeklyStats(startDate: LocalDate) {
-        // 날짜별 그룹핑 (yyyy-MM-dd 문자열 -> 기록 리스트)
         val grouped = allRecords.groupBy { it.date }
         val formatter = DateTimeFormatter.ofPattern("MM.dd")
         val dayLabelMap = mapOf(

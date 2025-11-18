@@ -1,6 +1,5 @@
 package com.immersionlog.app.utils
 
-
 import com.immersionlog.app.domain.entity.FocusRecord
 import com.immersionlog.app.domain.entity.FocusRecordEntity
 
