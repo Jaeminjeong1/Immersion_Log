@@ -41,4 +41,11 @@ object UseCaseModule {
     fun provideDeleteRecordUseCase(
         repository: FocusRecordRepository
     ) = DeleteRecordUseCase(repository)
+
+    @Provides
+    @Singleton
+    fun provideGetRecordsByDateUseCase(
+        repository: FocusRecordRepository
+    ) = GetRecordsByDateUseCase(repository)
+
 }
