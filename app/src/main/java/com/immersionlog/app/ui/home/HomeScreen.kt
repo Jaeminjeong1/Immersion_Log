@@ -13,14 +13,18 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
-import com.immersionlog.app.domain.entity.FocusRecord
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.compose.material3.CenterAlignedTopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 
+
+
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
     onRecordClick: () -> Unit,
@@ -31,42 +35,72 @@ fun HomeScreen(
 
     val selectedIndexState = remember { mutableStateOf<Int?>(null) }
 
-    Column(
+    BoxWithConstraints(
         modifier = Modifier
             .fillMaxSize()
-            .padding(24.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
-    ) {
+    ){
+        val screenHeight = maxHeight
+        val screenWidth = maxWidth
 
-        Text(text = uiState.value.growthMessage, style = MaterialTheme.typography.titleMedium)
+        val dynamicPadding = (screenWidth * 0.07f).coerceAtLeast(16.dp)
 
-        Spacer(modifier = Modifier.height(20.dp))
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(horizontal = dynamicPadding),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
 
-        WeeklyNavigationRow(
-            weeklyStats = uiState.value.weeklyStats,
-            onPrevious = { viewModel.previousWeek() },
-            onNext = { viewModel.nextWeek() }
-        )
+            Spacer(modifier = Modifier.height(screenHeight * 0.02f))
 
-        Spacer(modifier = Modifier.height(8.dp))
+            CenterAlignedTopAppBar(
+                title = {
+                    Text(
+                        text = "Immersion Log",
+                        style = MaterialTheme.typography.titleLarge
+                    )
+                },
+                colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
+                    containerColor = MaterialTheme.colorScheme.primaryContainer,
+                    titleContentColor = MaterialTheme.colorScheme.onPrimaryContainer
+                )
+            )
 
-        WeeklyStatsChartSection(
-            stats = uiState.value.weeklyStats,
-            selectedIndex = selectedIndexState.value,
-            onPointSelected = { idx -> selectedIndexState.value = idx }
-        )
+            Spacer(modifier = Modifier.height(48.dp))
 
-        Spacer(modifier = Modifier.height(16.dp))
+            Text(
+                text = uiState.value.growthMessage,
+                style = MaterialTheme.typography.titleMedium
+            )
 
-        Button(onClick = onRecordClick) {
-            Text("오늘의 몰입 기록하기")
-        }
+            Spacer(modifier = Modifier.height(24.dp))
 
-        Spacer(modifier = Modifier.height(12.dp))
+            WeeklyNavigationRow(
+                weeklyStats = uiState.value.weeklyStats,
+                onPrevious = { viewModel.previousWeek() },
+                onNext = { viewModel.nextWeek() }
+            )
 
-        Button(onClick = onListClick) {
-            Text("기록 목록 보기")
+            Spacer(modifier = Modifier.height(8.dp))
+
+            WeeklyStatsChartSection(
+                stats = uiState.value.weeklyStats,
+                selectedIndex = selectedIndexState.value,
+                onPointSelected = { idx -> selectedIndexState.value = idx },
+                modifier = Modifier.height(screenHeight * 0.38f)
+            )
+
+            Spacer(modifier = Modifier.height(48.dp))
+
+            Button(onClick = onRecordClick) {
+                Text("오늘의 몰입 기록하기")
+            }
+
+            Spacer(modifier = Modifier.height(12.dp))
+
+            Button(onClick = onListClick) {
+                Text("기록 목록 보기")
+            }
         }
     }
 }
@@ -80,13 +114,13 @@ private fun WeeklyLineChart(
     if (stats.isEmpty()) return
 
     val maxMinutes = stats.maxOf { it.avgMinutes }.coerceAtLeast(1)
-    val maxScore   = stats.maxOf { it.avgScore }.coerceAtLeast(1)
+    val maxScore = stats.maxOf { it.avgScore }.coerceAtLeast(1)
 
     val minuteTicks = (0..4).map { (maxMinutes * it / 4f).toInt() }
-    val scoreTicks  = (0..maxScore).toList()
+    val scoreTicks = (0..maxScore).toList()
 
     val minutesColor = MaterialTheme.colorScheme.primary
-    val scoreColor   = MaterialTheme.colorScheme.tertiary
+    val scoreColor = MaterialTheme.colorScheme.tertiary
 
     Column(modifier = Modifier.fillMaxWidth()) {
         Row(
@@ -137,12 +171,12 @@ private fun WeeklyLineChart(
                     val stepX = if (stats.size > 1) w / (stats.size - 1) else 0f
 
                     val minutesPath = Path()
-                    val scorePath   = Path()
+                    val scorePath = Path()
 
                     stats.forEachIndexed { index, stat ->
                         val x = stepX * index
                         val yMinutes = h - (stat.avgMinutes.toFloat() / maxMinutes) * h
-                        val yScore   = h - (stat.avgScore.toFloat()   / maxScore)   * h
+                        val yScore = h - (stat.avgScore.toFloat() / maxScore) * h
                         if (index == 0) {
                             minutesPath.moveTo(x, yMinutes)
                             scorePath.moveTo(x, yScore)
@@ -153,17 +187,21 @@ private fun WeeklyLineChart(
                     }
 
                     drawPath(minutesPath, color = minutesColor, style = Stroke(width = 2.dp.toPx()))
-                    drawPath(scorePath,   color = scoreColor,   style = Stroke(width = 2.dp.toPx()))
+                    drawPath(scorePath, color = scoreColor, style = Stroke(width = 2.dp.toPx()))
 
                     stats.forEachIndexed { index, stat ->
                         val x = stepX * index
                         val yMinutes = h - (stat.avgMinutes.toFloat() / maxMinutes) * h
-                        val yScore   = h - (stat.avgScore.toFloat()   / maxScore)   * h
+                        val yScore = h - (stat.avgScore.toFloat() / maxScore) * h
                         val isSelected = (selectedIndex == index)
                         val radiusMinutes = if (isSelected) 6.dp.toPx() else 4.dp.toPx()
-                        val radiusScore   = if (isSelected) 6.dp.toPx() else 4.dp.toPx()
-                        drawCircle(minutesColor, radius = radiusMinutes, center = Offset(x, yMinutes))
-                        drawCircle(scoreColor,   radius = radiusScore,   center = Offset(x, yScore))
+                        val radiusScore = if (isSelected) 6.dp.toPx() else 4.dp.toPx()
+                        drawCircle(
+                            minutesColor,
+                            radius = radiusMinutes,
+                            center = Offset(x, yMinutes)
+                        )
+                        drawCircle(scoreColor, radius = radiusScore, center = Offset(x, yScore))
                     }
                 }
             }
@@ -223,7 +261,7 @@ fun WeeklyNavigationRow(
 
         // 주간 범위 텍스트: 예) 11.11(월) ~ 11.17(일)
         val start = weeklyStats.firstOrNull()
-        val end   = weeklyStats.lastOrNull()
+        val end = weeklyStats.lastOrNull()
         Text(
             text = if (start != null && end != null)
                 "${start.dateLabel}(${start.dayLabel}) ~ ${end.dateLabel}(${end.dayLabel})"
@@ -241,7 +279,8 @@ fun WeeklyNavigationRow(
 fun WeeklyStatsChartSection(
     stats: List<WeeklyStat>,
     selectedIndex: Int?,
-    onPointSelected: (Int) -> Unit
+    onPointSelected: (Int) -> Unit,
+    modifier: Modifier
 ) {
     if (stats.isEmpty()) return
 
