@@ -10,6 +10,9 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import java.time.LocalDate
+import java.time.DayOfWeek
+import java.time.format.DateTimeFormatter
 import javax.inject.Inject
 
 @HiltViewModel
@@ -20,18 +23,36 @@ class HomeViewModel @Inject constructor(
     private val _uiState = MutableStateFlow(HomeUiState())
     val uiState: StateFlow<HomeUiState> = _uiState
 
+    private var allRecords: List<FocusRecord> = emptyList()
+
+    private var currentWeekStartDate: LocalDate = LocalDate.now()
+
     init {
         loadHomeData()
     }
 
+    fun refresh() {
+        viewModelScope.launch {
+            loadHomeData()
+        }
+    }
+
     private fun loadHomeData() = viewModelScope.launch {
         val records = getAllRecordsUseCase()
+        allRecords = records
+
+        val todayDate = records.firstOrNull()?.date ?: LocalDate.now().toString()
+        val today = LocalDate.parse(todayDate)
+        val dow = today.dayOfWeek.value
+        val startOfWeek = today.minusDays((dow - DayOfWeek.MONDAY.value).toLong())
+        currentWeekStartDate = startOfWeek
+
+        updateWeeklyStats(startOfWeek)
 
         if (records.isNotEmpty()) {
-            val today = records.first().date
-            _uiState.update {
-                it.copy(
-                    todayRecordExists = isToday(today),
+            _uiState.update { state ->
+                state.copy(
+                    todayRecordExists = isToday(todayDate),
                     growthMessage = buildGrowthMessage(records)
                 )
             }
@@ -53,5 +74,55 @@ class HomeViewModel @Inject constructor(
             today.minutes > yesterday.minutes -> "어제보다 더 오래 집중했어요! 💪"
             else -> "꾸준함이 가장 강력한 힘이에요 ✨"
         }
+    }
+
+    private fun updateWeeklyStats(startDate: LocalDate) {
+        // 날짜별 그룹핑 (yyyy-MM-dd 문자열 -> 기록 리스트)
+        val grouped = allRecords.groupBy { it.date }
+        val formatter = DateTimeFormatter.ofPattern("MM.dd")
+        val dayLabelMap = mapOf(
+            DayOfWeek.MONDAY to "월",
+            DayOfWeek.TUESDAY to "화",
+            DayOfWeek.WEDNESDAY to "수",
+            DayOfWeek.THURSDAY to "목",
+            DayOfWeek.FRIDAY to "금",
+            DayOfWeek.SATURDAY to "토",
+            DayOfWeek.SUNDAY to "일"
+        )
+        val stats = (0..6).map { offset ->
+            val date = startDate.plusDays(offset.toLong())
+            val dateString = date.toString()
+            val recordsForDay = grouped[dateString]
+            val avgMinutes = recordsForDay?.map { it.minutes }?.average()?.toInt() ?: 0
+            val avgScore = recordsForDay?.map { it.score }?.average()?.toInt() ?: 0
+            val dayLabel = dayLabelMap[date.dayOfWeek] ?: date.dayOfWeek.name.substring(0, 1)
+            val dateLabel = date.format(formatter)
+            WeeklyStat(
+                date = date,
+                dayLabel = dayLabel,
+                dateLabel = dateLabel,
+                avgMinutes = avgMinutes,
+                avgScore = avgScore
+            )
+        }
+        currentWeekStartDate = startDate
+        _uiState.update { state ->
+            state.copy(
+                currentWeekStart = startDate.toString(),
+                weeklyStats = stats
+            )
+        }
+    }
+
+    fun previousWeek() {
+        if (allRecords.isEmpty()) return
+        val newStart = currentWeekStartDate.minusWeeks(1)
+        updateWeeklyStats(newStart)
+    }
+
+    fun nextWeek() {
+        if (allRecords.isEmpty()) return
+        val newStart = currentWeekStartDate.plusWeeks(1)
+        updateWeeklyStats(newStart)
     }
 }
