@@ -47,9 +47,9 @@ fun AppNavHost() {
 
         composable("list") {
             ListScreen(
-                onRecordClick = { id ->
-                    navController.navigate("detail/$id")
-                }
+                onDateClick = { date ->
+                    navController.navigate("daily/$date")
+                },
             )
         }
 
@@ -65,6 +65,19 @@ fun AppNavHost() {
             )
         }
 
+        composable(
+            route = "daily/{date}",
+            arguments = listOf(navArgument("date") { type = NavType.StringType })
+        ) { backStackEntry ->
+            val date = backStackEntry.arguments?.getString("date").orEmpty()
+            DailyScreen(
+                date = date,
+                onBack = { navController.popBackStack() },
+                onEdit = { recordId ->
+                    navController.navigate("record/$recordId")
+                }
+            )
+        }
 
     }
 }

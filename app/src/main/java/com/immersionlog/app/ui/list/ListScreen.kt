@@ -10,13 +10,16 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.immersionlog.app.domain.entity.FocusRecord
+import kotlin.math.roundToInt
 
 @Composable
 fun ListScreen(
-    onRecordClick: (Long) -> Unit,
+    onDateClick: (String) -> Unit,
     viewModel: ListViewModel = hiltViewModel()
 ) {
     val uiState = viewModel.uiState.collectAsState()
+    val grouped = uiState.value.records.groupBy { it.date }
+    val sortedDates = grouped.keys.sortedDescending()
 
     LaunchedEffect(Unit) {
         viewModel.loadRecords()
@@ -27,10 +30,26 @@ fun ListScreen(
             .fillMaxSize()
             .padding(16.dp)
     ) {
-        items(uiState.value.records) { item ->
-            ListItemCard(item = item, onClick = { onRecordClick(item.id) })
+        items(sortedDates) { date ->
+            val dayRecords = grouped[date] ?: emptyList()
+            val totalMinutes = dayRecords.sumOf { it.minutes }
+            val averageScore = if (dayRecords.isNotEmpty()) {
+                dayRecords.map { it.score }.average().roundToInt()
+            } else 0
+
+            Card(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clickable { onDateClick(date) }
+                    .padding(vertical = 4.dp)
+            ) {
+                Column(modifier = Modifier.padding(16.dp)) {
+                    Text(text = date, style = MaterialTheme.typography.titleMedium)
+                    Text("평균 점수: $averageScore")
+                    Text("총 집중 시간: ${totalMinutes}분")
+                }
+            }
             Spacer(modifier = Modifier.height(8.dp))
-        }
     }
 }
 
