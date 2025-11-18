@@ -67,19 +67,19 @@ woowacourse - Open Mission
 <table align="center">
   <tr>
     <td align="center">
-      <img src="./images/home.png" width="120"/><br/>
+      <img src="./images/home.png" width="150"/><br/>
       <sub>[ 홈 화면 ]</sub>
     </td>
     <td align="center">
-      <img src="./images/record.png" width="120"/><br/>
+      <img src="./images/record.png" width="150"/><br/>
       <sub>[ 로그 작성 ]</sub>
     </td>
     <td align="center">
-      <img src="./images/detail.png" width="120"/><br/>
+      <img src="./images/detail.png" width="150"/><br/>
       <sub>[ 일일 상세 ]</sub>
     </td>
     <td align="center">
-      <img src="./images/list.png" width="120"/><br/>
+      <img src="./images/list.png" width="150"/><br/>
       <sub>[ 기록 목록 ]</sub>
     </td>
   </tr>
