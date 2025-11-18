@@ -18,12 +18,15 @@ fun ListScreen(
 ) {
     val uiState = viewModel.uiState.collectAsState()
 
+    LaunchedEffect(Unit) {
+        viewModel.loadRecords()
+    }
+
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
             .padding(16.dp)
     ) {
-
         items(uiState.value.records) { item ->
             ListItemCard(item = item, onClick = { onRecordClick(item.id) })
             Spacer(modifier = Modifier.height(8.dp))
@@ -46,3 +49,6 @@ fun ListItemCard(item: FocusRecord, onClick: () -> Unit) {
         }
     }
 }
+}
+
+
