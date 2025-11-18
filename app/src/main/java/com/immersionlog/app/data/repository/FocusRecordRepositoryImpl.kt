@@ -28,4 +28,7 @@ class FocusRecordRepositoryImpl @Inject constructor(
     override suspend fun delete(record: FocusRecord) {
         dao.delete(record.toEntity())
     }
+
+    override suspend fun getByDate(date: String): List<FocusRecord> =
+        dao.getByDate(date).map { it.toDomain() }
 }
