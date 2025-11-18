@@ -8,4 +8,5 @@ interface FocusRecordRepository {
     suspend fun getById(id: Long): FocusRecord?
     suspend fun update(record: FocusRecord)
     suspend fun delete(record: FocusRecord)
+    suspend fun getByDate(date: String): List<FocusRecord>
 }
