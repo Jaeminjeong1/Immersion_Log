@@ -24,4 +24,8 @@ interface FocusRecordDao {
 
     @Query("SELECT * FROM focus_records WHERE id = :id LIMIT 1")
     suspend fun getById(id: Long): FocusRecordEntity?
+
+    // 특정 날짜의 모든 기록을 반환한다. 날짜는 yyyy-MM-dd 문자열 형식을 따른다.
+    @Query("SELECT * FROM focus_records WHERE date = :date ORDER BY date DESC")
+    suspend fun getByDate(date: String): List<FocusRecordEntity>
 }
