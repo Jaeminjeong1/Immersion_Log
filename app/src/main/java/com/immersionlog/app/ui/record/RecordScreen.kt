@@ -10,12 +10,18 @@ import androidx.hilt.navigation.compose.hiltViewModel
 @Composable
 fun RecordScreen(
     onSaved: () -> Unit,
+    recordId: Long? = null,
     viewModel: RecordViewModel = hiltViewModel()
 ) {
     val uiState = viewModel.uiState.collectAsState()
 
+    LaunchedEffect(recordId) {
+        recordId?.let { viewModel.loadRecord(it) }
+    }
+
     if (uiState.value.isSaved) {
         onSaved()
+        return
     }
 
     Column(
@@ -64,8 +70,16 @@ fun RecordScreen(
 
         Spacer(modifier = Modifier.height(20.dp))
 
-        Button(onClick = { viewModel.saveRecord() }) {
-            Text("저장하기")
+        Button(onClick = {
+            if (uiState.value.isEditing) {
+                // 수정 모드일 때는 업데이트 UseCase 실행
+                recordId?.let { viewModel.updateRecord(it) }
+            } else {
+                // 새로 작성 모드일 때는 저장 UseCase 실행
+                viewModel.saveRecord()
+            }
+        }) {
+            Text(if (uiState.value.isEditing) "수정 완료" else "저장하기")
         }
     }
 }
