@@ -1,12 +1,14 @@
 package com.immersionlog.app.ui
 
 import androidx.compose.runtime.Composable
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavType
 import androidx.navigation.compose.*
 import androidx.navigation.navArgument
 import com.immersionlog.app.ui.daily.DailyScreen
 import com.immersionlog.app.ui.detail.DetailScreen
 import com.immersionlog.app.ui.home.HomeScreen
+import com.immersionlog.app.ui.home.HomeViewModel
 import com.immersionlog.app.ui.list.ListScreen
 import com.immersionlog.app.ui.record.RecordScreen
 
@@ -28,8 +30,13 @@ fun AppNavHost() {
 
         // 새 기록 작성 화면
         composable("record") {
+            val parentEntry = navController.getBackStackEntry("home")
+            val homeViewModel: HomeViewModel = hiltViewModel(parentEntry)
             RecordScreen(
-                onSaved = { navController.popBackStack() }
+                onSaved = {
+                    homeViewModel.refresh()
+                    navController.popBackStack()
+                }
             )
         }
 
