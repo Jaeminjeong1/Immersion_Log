@@ -13,7 +13,7 @@ woowacourse - Open Mission
 
 ---
 
-## 2. 프로젝트 소개 (1–3줄)
+## 2. 프로젝트 소개
 
 - **몰입로그(Immersion Log)** 는 하루의 몰입 점수,집중 시간,메모를 기록하여 ‘어제보다 나은 나’를 확인할 수 있게 돕는 개인
 성장 기록 앱입니다. 간단한 화면 구성과 깔끔한 아키텍처를 기반으로 한 Kotlin Android 앱으로, 주간 통계 그래프와 일일 기록 기능
@@ -21,7 +21,7 @@ woowacourse - Open Mission
 
 ---
 
-## 3. 주요 기능 (MVP)
+## 3. 주요 기능
 
 ###  1) 오늘의 몰입 기록 입력 및 수정
 
@@ -97,7 +97,6 @@ woowacourse - Open Mission
 - Kotlin
 - Android SDK
 - Jetpack Compose
-- ViewBinding
 
 ### **Architecture**
 
@@ -109,7 +108,6 @@ woowacourse - Open Mission
 ### **Data**
 
 - Room Database
-- Coroutine / Flow
 - Hilt (DI)
 
 ---
